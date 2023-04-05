@@ -1,26 +1,33 @@
-from typing import TypeVar
+from typing import TypeVar, Type
 
 import dask.dataframe as dd
 
 from src.core.iterative_query_processor import IterativeQueryProcessor
+from src.core.strategies.iteration_strategy import IterationStrategy
 from src.core.strategies.transitive_closure import TransitiveClosure
 
 T = TypeVar('T')
 
 
-def main():
-    data_path = '../test_data/transitive_closure.csv'
-    number_of_partitions = 4
+def get_strategy(problem_type) -> Type[IterationStrategy]:
+    if problem_type == 'transitive_closure':
+        return TransitiveClosure
+    else:
+        raise ValueError(f'Invalid problem type: {problem_type}')
 
-    # Load data from file using Dask
+
+def main(problem_type, data_path, number_of_partitions):
     data = dd.read_csv(data_path, number_of_partitions)
 
     processor = IterativeQueryProcessor(data)
-    transitive_closure = TransitiveClosure()
+    strategy = get_strategy(problem_type)()
 
-    result = processor.iterative_query_processing(transitive_closure)
+    result = processor.iterative_query_processing(strategy)
     print(result.compute())
 
 
 if __name__ == '__main__':
-    main()
+    problem = 'transitive_closure'
+    path = '../test_data/transitive_closure.csv'
+    partitions = 4
+    main(problem, path, partitions)

@@ -1,5 +1,3 @@
- Iterative Query Processor
-
 Iterative Query Processor
 =========================
 
