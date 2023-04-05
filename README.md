@@ -16,24 +16,7 @@ Navigate to the project directory and install the required dependencies using pi
 Usage
 -----
 
-To use the Iterative Query Processor, import the `IterativeQueryProcessor` class and any desired strategy classes, then instantiate the `IterativeQueryProcessor` with the desired data and number of partitions:
-
-    import pandas as pd
-    import dask.dataframe as dd
-    from iterative_query_processor import IterativeQueryProcessor, TransitiveClosure
-    
-    # Load data from file
-    data = dd.read_csv('data.csv')
-    
-    # Instantiate the IterativeQueryProcessor
-    processor = IterativeQueryProcessor(data, num_partitions=4)
-    
-    # Instantiate the desired strategy
-    strategy = TransitiveClosure()
-    
-    # Perform the iterative query
-    result = processor.iterative_query_processing(strategy)
-    print(result.compute())
+To use the Iterative Query Processor, import the `IterativeQueryProcessor` class and any desired strategy classes, then instantiate the `IterativeQueryProcessor` with the desired data and number of partitions.
 
 Contributing
 ------------
