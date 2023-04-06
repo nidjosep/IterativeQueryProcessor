@@ -1,1 +1,2 @@
-# empty __init__.py file
+# defines
+DEFAULT_PARTITION_COUNT = 4

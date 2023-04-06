@@ -2,6 +2,7 @@ from typing import TypeVar, Type
 
 import dask.dataframe as dd
 
+from src import DEFAULT_PARTITION_COUNT
 from src.core.iterative_query_processor import IterativeQueryProcessor
 from src.core.strategies.iteration_strategy import IterationStrategy
 from src.core.strategies.shortest_path import ShortestPath
@@ -32,5 +33,4 @@ def main(problem_type, data_path, number_of_partitions):
 if __name__ == '__main__':
     problem = 'shortest_path'  # ['transitive_closure', 'shortest_path']
     path = f'../test_data/{problem}.csv'
-    partitions = 4
-    main(problem, path, partitions)
+    main(problem, path, DEFAULT_PARTITION_COUNT)
