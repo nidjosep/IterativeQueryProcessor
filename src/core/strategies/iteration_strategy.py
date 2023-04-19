@@ -9,7 +9,7 @@ class IterationStrategy(ABC):
         pass
 
     @abstractmethod
-    def handle(self, data) -> dd.DataFrame:
+    def handle(self, base, data) -> dd.DataFrame:
         pass
 
     @abstractmethod

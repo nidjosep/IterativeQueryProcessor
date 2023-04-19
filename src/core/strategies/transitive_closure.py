@@ -37,8 +37,8 @@ class TransitiveClosure(IterationStrategy):
         edges = query_context.data
         return edges.loc[edges[self.columns[0]] == self.source]
 
-    def handle(self, edges: dd.DataFrame) -> dd.DataFrame:
-        joined = edges.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('', '_new'))
+    def handle(self, base, edges: dd.DataFrame) -> dd.DataFrame:
+        joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('', '_new'))
         new_edges = joined.drop(columns=[self.columns[1], self.columns[0] + '_new']).rename(columns={self.columns[1] + '_new': self.columns[1]})
         new_edges = new_edges[new_edges[self.columns[0]] != new_edges[self.columns[1]]].drop_duplicates()
 

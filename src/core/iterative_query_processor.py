@@ -9,13 +9,13 @@ class IterativeQueryProcessor:
 
     def iterative_query_processing(self, strategy: IterationStrategy) -> dd.DataFrame:
         changes = True
-        data = strategy.base(self.query_context)
+        base = strategy.base(self.query_context)
 
         while changes:
-            new_data = strategy.handle(data)
-            updated_result = dd.concat([data, new_data]).drop_duplicates()
+            new_data = strategy.handle(base, self.query_context.data)
+            updated_result = dd.concat([base, new_data]).drop_duplicates()
 
-            changes = len(data) != len(updated_result)
-            data = updated_result
+            changes = len(base) != len(updated_result)
+            base = updated_result
 
-        return strategy.process_result(data)
+        return strategy.process_result(base)

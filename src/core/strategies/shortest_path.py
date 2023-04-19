@@ -43,11 +43,11 @@ class ShortestPath(IterationStrategy):
         self.columns = query_context.columns
         self.source = query_context.source
         self.target = query_context.target
-        edges = query_context.data
+        edges = self.query_context.data
         return edges.loc[edges[self.columns[0]] == self.source]
 
-    def handle(self, edges) -> dd.DataFrame:
-        joined = edges.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('_x', '_y'))
+    def handle(self, base, edges) -> dd.DataFrame:
+        joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('_x', '_y'))
 
         new_edges = joined[joined[self.columns[1] + '_x'] == joined[self.columns[0] + '_y']]
 
@@ -62,3 +62,4 @@ class ShortestPath(IterationStrategy):
     def process_result(self, edges: dd.DataFrame) -> dd.DataFrame:
         edges = edges.groupby([self.columns[0], self.columns[1]])[self.columns[2]].min().reset_index()
         return edges.loc[edges[self.columns[1]] == self.target]
+
