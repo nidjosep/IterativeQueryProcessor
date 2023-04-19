@@ -8,17 +8,18 @@ T = TypeVar('T')
 
 
 class IterativeQueryProcessor:
-    def __init__(self, data: dd.DataFrame):
-        self.data = data
+    def __init__(self, query_context):
+        self.query_context = query_context
 
-    def iterative_query_processing(self, compute_iteration: IterationStrategy) -> dd.DataFrame:
+    def iterative_query_processing(self, strategy: IterationStrategy) -> dd.DataFrame:
         changes = True
-        result = self.data.copy()
+        data = strategy.base(self.query_context)
 
         while changes:
-            updated_result = compute_iteration.handle(result)
+            new_data = strategy.handle(data)
+            updated_result = dd.concat([data, new_data]).drop_duplicates()
 
-            changes = len(result) != len(updated_result)
-            result = updated_result
+            changes = len(data) != len(updated_result)
+            data = updated_result
 
-        return result
+        return strategy.process_result(data)

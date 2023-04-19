@@ -5,6 +5,15 @@ T = TypeVar('T')
 
 
 class IterationStrategy(ABC):
+
     @abstractmethod
-    def handle(self, data: T) -> T:
+    def base(self, query) -> T:
+        pass
+
+    @abstractmethod
+    def handle(self, data) -> T:
+        pass
+
+    @abstractmethod
+    def process_result(self, edges) -> T:
         pass
