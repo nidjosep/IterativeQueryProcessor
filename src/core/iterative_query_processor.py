@@ -1,10 +1,6 @@
-from typing import TypeVar
-
 import dask.dataframe as dd
 
 from src.core.strategies.iteration_strategy import IterationStrategy
-
-T = TypeVar('T')
 
 
 class IterativeQueryProcessor:

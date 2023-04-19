@@ -1,19 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
-
-T = TypeVar('T')
+import dask.dataframe as dd
 
 
 class IterationStrategy(ABC):
 
     @abstractmethod
-    def base(self, query) -> T:
+    def base(self, query) -> dd.DataFrame:
         pass
 
     @abstractmethod
-    def handle(self, data) -> T:
+    def handle(self, data) -> dd.DataFrame:
         pass
 
     @abstractmethod
-    def process_result(self, edges) -> T:
+    def process_result(self, edges) -> dd.DataFrame:
         pass

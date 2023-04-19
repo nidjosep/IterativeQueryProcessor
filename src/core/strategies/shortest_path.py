@@ -1,6 +1,6 @@
 import dask.dataframe as dd
 
-from src.core.strategies.iteration_strategy import IterationStrategy, T
+from src.core.strategies.iteration_strategy import IterationStrategy
 
 """
 -- An example iterative query to find the shortest path:

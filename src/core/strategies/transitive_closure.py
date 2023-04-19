@@ -1,6 +1,6 @@
 import dask.dataframe as dd
 
-from src.core.strategies.iteration_strategy import IterationStrategy, T
+from src.core.strategies.iteration_strategy import IterationStrategy
 
 """
 WITH RECURSIVE transitive_closure AS (
@@ -30,7 +30,7 @@ class TransitiveClosure(IterationStrategy):
         self.source = None
         self.columns = None
 
-    def base(self, query_context) -> T:
+    def base(self, query_context) -> dd.DataFrame:
         self.query_context = query_context
         self.columns = query_context.columns
         self.source = query_context.source
