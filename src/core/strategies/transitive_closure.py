@@ -43,8 +43,8 @@ class TransitiveClosure(IterationStrategy):
         new_edges = new_edges[new_edges[self.columns[0]] != new_edges[self.columns[1]]].drop_duplicates()
 
         # remove cyclic dependencies
-        cycle_nodes = base[self.columns[0]].compute()
-        new_edges = new_edges[~new_edges[self.columns[1]].isin(cycle_nodes)]
+        visited_nodes = set(base[self.columns[0]].compute()).union(set(base[self.columns[1]].compute()))
+        new_edges = new_edges[~new_edges[self.columns[1]].isin(visited_nodes)]
 
         return new_edges
 
