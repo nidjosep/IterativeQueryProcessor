@@ -57,6 +57,10 @@ class ShortestPath(IterationStrategy):
 
         new_edges = new_edges.rename(columns={self.columns[0] + '_x': self.columns[0], self.columns[1] + '_y': self.columns[1]})
 
+        # remove cyclic dependencies
+        cycle_nodes = base[self.columns[0]].compute()
+        new_edges = new_edges[~new_edges[self.columns[1]].isin(cycle_nodes)]
+
         return new_edges
 
     def process_result(self, edges: dd.DataFrame) -> dd.DataFrame:

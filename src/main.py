@@ -60,6 +60,6 @@ def main(problem_type, data_path, number_of_partitions):
 
 
 if __name__ == '__main__':
-    problem = 'shortest_path'  # ['transitive_closure', 'shortest_path']
+    problem = 'transitive_closure'  # ['transitive_closure', 'shortest_path']
     path = f'../test_data/{problem}.csv'
     main(problem, path, DEFAULT_PARTITION_COUNT)
