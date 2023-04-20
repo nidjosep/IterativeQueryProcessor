@@ -62,10 +62,12 @@ if __name__ == '__main__':
     if index == 2:
         problem = "shortest_path"
     path = f'../test_data/{problem}.csv'
-    source = int(input("Enter the source node value: "))
+    source_input = input("Enter the source node value: ")
+    source = int(source_input) if source_input else None
     target = 0
 
     if problem == 'shortest_path':
-        target = int(input("Enter the target node value: "))
+        target_input = input("Enter the target node value: ")
+        target = int(target_input) if target_input else None
 
     main(problem, path, DEFAULT_PARTITION_COUNT, source, target)

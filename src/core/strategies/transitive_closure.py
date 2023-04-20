@@ -34,16 +34,20 @@ class TransitiveClosure(IterationStrategy):
         self.query_context = query_context
         self.columns = query_context.columns
         self.source = query_context.source
-        edges = query_context.data
-        return edges.query(f"{self.columns[0]} == {self.source}")
+        edges = self.query_context.data
+        if self.source is not None:
+            edges = edges.query(f"{self.columns[0]} == {self.source}")
+        return edges
 
     def handle(self, base: dd.DataFrame, edges: dd.DataFrame) -> dd.DataFrame:
         joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('', '_new'))
-        new_edges = joined.drop(columns=[self.columns[1], self.columns[0] + '_new']).rename(columns={self.columns[1] + '_new': self.columns[1]})
+        new_edges = joined.drop(columns=[self.columns[1], self.columns[0] + '_new']).rename(
+            columns={self.columns[1] + '_new': self.columns[1]})
         new_edges = new_edges[new_edges[self.columns[0]] != new_edges[self.columns[1]]].drop_duplicates()
 
         # remove cyclic dependencies
-        new_edges = new_edges[~new_edges[self.columns[1]].isin(set(base[self.columns[1]].drop_duplicates()))]
+        merged = new_edges.merge(base, on=[self.columns[0], self.columns[1]], how='left', indicator=True)
+        new_edges = merged[merged['_merge'] == 'left_only'][[self.columns[0], self.columns[1]]]
 
         return new_edges
 

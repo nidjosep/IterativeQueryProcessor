@@ -44,18 +44,19 @@ class ShortestPath(IterationStrategy):
         self.source = query_context.source
         self.target = query_context.target
         edges = self.query_context.data
-        return edges.query(f"{self.columns[0]} == {self.source}")
+        if self.source is not None:
+            edges = edges.query(f"{self.columns[0]} == {self.source}")
+        return edges
 
     def handle(self, base, edges) -> dd.DataFrame:
-        joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('_x', '_y'))
+        joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('', '_new'))
+        new_edges = joined[joined[self.columns[1]] == joined[self.columns[0] + '_new']]
 
-        new_edges = joined[joined[self.columns[1] + '_x'] == joined[self.columns[0] + '_y']]
+        new_edges[self.columns[2]] = new_edges[self.columns[2]] + new_edges[self.columns[2] + '_new']
 
-        new_edges[self.columns[2]] = new_edges[self.columns[2] + '_x'] + new_edges[self.columns[2] + '_y']
+        new_edges = new_edges[[self.columns[0], self.columns[1] + '_new', self.columns[2]]]
 
-        new_edges = new_edges[[self.columns[0] + '_x', self.columns[1] + '_y', self.columns[2]]]
-
-        new_edges = new_edges.rename(columns={self.columns[0] + '_x': self.columns[0], self.columns[1] + '_y': self.columns[1]})
+        new_edges = new_edges.rename(columns={self.columns[0]: self.columns[0], self.columns[1] + '_new': self.columns[1]})
 
         # remove cyclic dependencies
         new_edges = new_edges[~new_edges[self.columns[1]].isin(set(base[self.columns[1]].drop_duplicates()))]
@@ -63,6 +64,8 @@ class ShortestPath(IterationStrategy):
         return new_edges
 
     def process_result(self, edges: dd.DataFrame) -> dd.DataFrame:
+        print(edges.compute())
         edges = edges.groupby([self.columns[0], self.columns[1]])[self.columns[2]].min().reset_index()
-        return edges.query(f"{self.columns[1]} == {self.target}")
-
+        if self.target is not None:
+            edges = edges.query(f"{self.columns[1]} == {self.target}")
+        return edges
