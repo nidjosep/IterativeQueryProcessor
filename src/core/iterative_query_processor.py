@@ -14,9 +14,9 @@ class IterativeQueryProcessor:
         while changes:
             new_data = strategy.handle(base, self.query_context.data)
 
-            updated_result = dd.concat([base, new_data]).drop_duplicates()
+            if len(new_data) == 0:  # if no new records identified, then exit the iteration
+                break
 
-            changes = len(base) != len(updated_result)
-            base = updated_result
+            base = dd.concat([base, new_data]).drop_duplicates()
 
         return strategy.process_result(base)
