@@ -58,8 +58,7 @@ class ShortestPath(IterationStrategy):
         new_edges = new_edges.rename(columns={self.columns[0] + '_x': self.columns[0], self.columns[1] + '_y': self.columns[1]})
 
         # remove cyclic dependencies
-        visited_nodes = set(base[self.columns[0]].unique()) | set(base[self.columns[1]].unique())
-        new_edges = new_edges[~new_edges[self.columns[1]].isin(visited_nodes)]
+        new_edges = new_edges[~new_edges[self.columns[1]].isin(set(base[self.columns[1]].drop_duplicates()))]
 
         return new_edges
 

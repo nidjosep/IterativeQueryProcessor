@@ -57,12 +57,15 @@ def main(problem_type, data_path, number_of_partitions, source, target):
 
 
 if __name__ == '__main__':
-    problem_type = input("Enter problem type [transitive_closure, shortest_path]: ")
-    path = f'../test_data/{problem_type}.csv'
+    index = int(input("Enter problem type [1. transitive_closure, 2. shortest_path]: "))
+    problem = "transitive_closure"
+    if index == 2:
+        problem = "shortest_path"
+    path = f'../test_data/{problem}.csv'
     source = int(input("Enter the source node value: "))
     target = 0
 
-    if problem_type == 'shortest_path':
+    if problem == 'shortest_path':
         target = int(input("Enter the target node value: "))
 
-    main(problem_type, path, DEFAULT_PARTITION_COUNT, source, target)
+    main(problem, path, DEFAULT_PARTITION_COUNT, source, target)
