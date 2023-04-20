@@ -25,13 +25,12 @@ def get_strategy(problem_type) -> Type[IterationStrategy]:
 def get_query_context(problem_type, data, source, target):
     query_context = QueryContext()
     query_context.data = data
+    query_context.columns = data.compute().columns.tolist()
     if problem_type == 'transitive_closure':
         query_context.source = source
-        query_context.columns = ['source', 'target']
     elif problem_type == 'shortest_path':
         query_context.source = source
         query_context.target = target
-        query_context.columns = ['source', 'target', 'distance']
     return query_context
 
 
