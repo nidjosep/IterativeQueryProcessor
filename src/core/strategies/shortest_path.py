@@ -44,7 +44,7 @@ class ShortestPath(IterationStrategy):
         self.source = query_context.source
         self.target = query_context.target
         edges = self.query_context.data
-        return edges.loc[edges[self.columns[0]] == self.source]
+        return edges.query(f"{self.columns[0]} == {self.source}")
 
     def handle(self, base, edges) -> dd.DataFrame:
         joined = base.merge(edges, left_on=self.columns[1], right_on=self.columns[0], suffixes=('_x', '_y'))
@@ -58,12 +58,12 @@ class ShortestPath(IterationStrategy):
         new_edges = new_edges.rename(columns={self.columns[0] + '_x': self.columns[0], self.columns[1] + '_y': self.columns[1]})
 
         # remove cyclic dependencies
-        visited_nodes = set(base[self.columns[0]].compute()).union(set(base[self.columns[1]].compute()))
+        visited_nodes = set(base[self.columns[0]].unique()) | set(base[self.columns[1]].unique())
         new_edges = new_edges[~new_edges[self.columns[1]].isin(visited_nodes)]
 
         return new_edges
 
     def process_result(self, edges: dd.DataFrame) -> dd.DataFrame:
         edges = edges.groupby([self.columns[0], self.columns[1]])[self.columns[2]].min().reset_index()
-        return edges.loc[edges[self.columns[1]] == self.target]
+        return edges.query(f"{self.columns[1]} == {self.target}")
 

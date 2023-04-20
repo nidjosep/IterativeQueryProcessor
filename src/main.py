@@ -40,22 +40,20 @@ def main(problem_type, data_path, number_of_partitions, source, target):
     print("Loading data as dask dataframes..")
     data = dd.read_csv(data_path, number_of_partitions)
     print("Completed loading!")
-
-    start_time = time.time()
-
     query_context = get_query_context(problem_type, data, source, target)
 
-    print("Initiating iterative query processor..")
+    print("Invoking iterative query processor..")
+    start_time = time.time()
     processor = IterativeQueryProcessor(query_context)
     result = processor.iterative_query_processing(strategy)
 
     print("Execution completed. Final Result:")
-    result = result.reset_index(drop=True)
-    print(result.compute())
-
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"\nTime taken : {elapsed_time:.2f} seconds")
+
+    result = result.reset_index(drop=True)
+    print(result.compute())
 
 
 if __name__ == '__main__':
